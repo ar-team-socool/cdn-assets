@@ -13,14 +13,22 @@ copy ไฟล์เข้าไปในแต่ละ resource
 
 ```
 cdn-assets/
-  gta-vehicles/      # รูปรถ GTA V (738 ไฟล์) — ชื่อไฟล์ = spawn name ของรถ + .png
-    adder.png
-    banshee.png
+  gta-vehicles/      # รูปรถ GTA V (844 ไฟล์) — ชื่อไฟล์ = spawn name ของรถ + .webp
+    adder.webp
+    banshee.webp
+    ...
+  gta-heads/         # รูปหัว/headshot (46 ไฟล์) — ชื่อไฟล์ = หมายเลข index + .webp
+    0.webp
+    1.webp
     ...
 ```
 
-ชื่อไฟล์ใน `gta-vehicles/` ตรงกับ **vehicle spawn name** (เช่น `adder`, `banshee2`,
-`zentorno`) ต่อด้วย `.png` — ดึงรูปจาก model name ได้ตรง ๆ
+- `gta-vehicles/` — ชื่อไฟล์ตรงกับ **vehicle spawn name** (เช่น `adder`, `banshee2`,
+  `zentorno`) ต่อด้วย `.webp` — ดึงรูปจาก model name ได้ตรง ๆ
+- `gta-heads/` — ชื่อไฟล์เป็น **หมายเลข index** (`0`–`45`) ต่อด้วย `.webp`
+
+> **ฟอร์แมตเป็น `.webp`** ทุกไฟล์ (อัปเดตจาก `.png` เดิม) — ไฟล์เล็กลงมากที่คุณภาพ
+> ใกล้เคียง โหลดเร็วกว่า; CEF (Chromium 103) ของ FiveM NUI รองรับ WebP เต็มรูปแบบ
 
 ---
 
@@ -34,22 +42,25 @@ https://cdn.jsdelivr.net/gh/<user>/<repo>@<version>/<path>
 |------|------------------|
 | `<user>/<repo>` | `ar-team-socool/cdn-assets` |
 | `<version>` | branch (`main`), git tag (`v1.0.0`), หรือ commit hash |
-| `<path>` | path ของไฟล์ในรีโป เช่น `gta-vehicles/adder.png` |
+| `<path>` | path ของไฟล์ในรีโป เช่น `gta-vehicles/adder.webp` |
 
 ### ตัวอย่าง
 
 ```
 # ระบุ branch (อัปเดตตามรีโปทันที — เหมาะกับ dev)
-https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/adder.png
+https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/adder.webp
 
 # ระบุ tag เวอร์ชัน (ล็อกเวอร์ชัน — เหมาะกับ production)
-https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@v1.0.0/gta-vehicles/adder.png
+https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@v1.1.0/gta-vehicles/adder.webp
 
 # ระบุ commit hash (ล็อกแน่นที่สุด)
-https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@a1b2c3d/gta-vehicles/adder.png
+https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@a1b2c3d/gta-vehicles/adder.webp
+
+# รูปหัว (gta-heads) อ้างด้วยหมายเลข index
+https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-heads/0.webp
 
 # ไม่ระบุเวอร์ชัน = latest tag ถ้ามี ไม่งั้น default branch
-https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets/gta-vehicles/adder.png
+https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets/gta-vehicles/adder.webp
 ```
 
 > **เลือก version ให้ถูก:**
@@ -65,12 +76,12 @@ https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets/gta-vehicles/adder.png
 ### NUI (HTML/CSS/JS)
 
 ```html
-<img src="https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/adder.png">
+<img src="https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/adder.webp">
 ```
 
 ```js
 const base = 'https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/';
-const url  = base + vehicleModel + '.png';   // vehicleModel = spawn name ของรถ
+const url  = base + vehicleModel + '.webp';   // vehicleModel = spawn name ของรถ
 
 // กัน model ที่ไม่มีรูป → ใส่ placeholder ผ่าน onerror
 img.onerror = () => { img.src = 'nui://ar_nui/assets/images/placeholder.png'; };
@@ -85,7 +96,7 @@ img.onerror = () => { img.src = 'nui://ar_nui/assets/images/placeholder.png'; };
 local CDN_BASE <const> = 'https://cdn.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/'
 
 local function vehicleImage(model)
-    return CDN_BASE .. model .. '.png'
+    return CDN_BASE .. model .. '.webp'
 end
 ```
 
@@ -102,7 +113,7 @@ end
 - เพิ่มหรือแก้ไฟล์แล้วอยากให้ `@main` เห็นทันที (ไม่รอ cache หมดอายุ) ให้ purge ผ่าน:
 
   ```
-  https://purge.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/<file>.png
+  https://purge.jsdelivr.net/gh/ar-team-socool/cdn-assets@main/gta-vehicles/<file>.webp
   ```
 
   เปิด URL นี้ใน browser หรือ `curl` หนึ่งครั้งเพื่อล้าง cache ของไฟล์นั้น
@@ -121,9 +132,9 @@ end
 ## การเพิ่มไฟล์ใหม่
 
 1. วางไฟล์ในโฟลเดอร์ที่เหมาะสม (เช่น `gta-vehicles/`) ตั้งชื่อให้ตรง convention
-   (รถ = spawn name ตัวพิมพ์เล็ก + `.png`)
+   (รถ = spawn name ตัวพิมพ์เล็ก + `.webp`, หัว = หมายเลข index + `.webp`)
 2. `git add` → `git commit` → `git push origin main`
 3. เข้าถึงได้ทันทีผ่าน `@main` (อาจต้อง purge ถ้า path เดิมเคยถูก cache)
 4. (production) tag เวอร์ชันใหม่แล้วชี้ URL ไปที่ tag
 
-> ขนาดไฟล์: jsDelivr รองรับไฟล์เดี่ยวสูงสุด ~50 MB ต่อไฟล์ ซึ่งเกินพอสำหรับรูป PNG
+> ขนาดไฟล์: jsDelivr รองรับไฟล์เดี่ยวสูงสุด ~50 MB ต่อไฟล์ ซึ่งเกินพอสำหรับรูป WebP
